@@ -7,7 +7,8 @@ const crypto = require('crypto');
 const registerUser = async (req, res) => {
     try{
         const { username, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
         const user = User({username, password: hashedPassword});
         await user.save();
         res.status(201).json({ message: 'User registered successfully' });
@@ -31,13 +32,12 @@ const userLogin = async (req, res) => {
         // Validate the password
         const passwordValid = await user.comparePassword(password);
         if(!passwordValid){
-            return res.status(401).json({ error: 'Invalid email or password' });
+            return res.status(401).json({ error: 'Invalid username or password' });
         }
 
         // Generate a JWT token
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
         res.status(200).json({ message: 'Access Granted!' });
-        console.log(token);
 
     } catch (err){
         res.status(500).json({err: err.message});
