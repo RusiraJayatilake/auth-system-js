@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
+// Register Users
 const registerUser = async (req, res) => {
     try{
         const { username, password } = req.body;
@@ -16,13 +17,11 @@ const registerUser = async (req, res) => {
     }
 }
 
+// User login
 const userLogin = async (req, res) => {
     try{
         const { username, password } = req.body;
         const user = await User.findOne({username});
-
-        //Secret Key
-        const secretKey = crypto.randomBytes(32).toString('hex');
 
         // Check user exists
         if(!user){
@@ -36,8 +35,8 @@ const userLogin = async (req, res) => {
         }
 
         // Generate a JWT token
-        const token = jwt.sign({ userId: user._id }, secretKey);
-        res.status(200).json({ token });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+        res.status(200).json({ message: 'Access Granted!' });
         console.log(token);
 
     } catch (err){
