@@ -27,6 +27,10 @@ app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'signup.html'));
 });
 
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
